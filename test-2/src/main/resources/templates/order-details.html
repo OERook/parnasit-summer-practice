@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: pageHead('Заказ')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<h1>Заказ <span th:text="${order.id}"></span></h1>
+
+<div th:if="${message}" class="flash" th:text="${message}"></div>
+
+<p>
+    Клиент: <strong th:text="${order.customerName}"></strong><br>
+    Дата: <span th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm:ss')}"></span><br>
+    Статус: <span class="badge" th:classappend="${order.status}" th:text="${order.status}"></span>
+</p>
+
+<form class="toolbar" method="post" th:action="@{/ui/orders/{id}/status(id=${order.id})}">
+    <label>Новый статус:
+        <select name="status">
+            <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == order.status}"></option>
+        </select>
+    </label>
+    <button class="btn" type="submit">Обновить</button>
+</form>
+
+<table>
+    <thead>
+    <tr><th>Товар</th><th>Количество</th><th>Цена</th><th>Сумма</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="i : ${order.items}">
+        <td th:text="${i.productName}"></td>
+        <td th:text="${i.quantity}"></td>
+        <td th:text="${i.price}"></td>
+        <td th:text="${i.price * i.quantity}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
